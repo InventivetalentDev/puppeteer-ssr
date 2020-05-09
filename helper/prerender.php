@@ -1,5 +1,6 @@
 <?php
 // PHP helper script to rewrite crawler requests to the SSR server
+// Change settings in prerender_config.php
 include "prerender_config.php";
 
 $ch = curl_init(PRERENDER_HOST . "/render?token=" . PRERENDER_TOKEN . "&url=" . urlencode("https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]));
