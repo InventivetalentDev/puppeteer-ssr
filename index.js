@@ -30,6 +30,8 @@ async function makeBrowser() {
     return browserInstance;
 }
 
+app.use(require("express-request-id")());
+
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get("/render", (req, res) => {
@@ -49,28 +51,53 @@ app.get("/render", (req, res) => {
     }
 
     let url = req.query.url;
+    console.log("Render request for " + url);
     if (cache.hasOwnProperty(url)) {
-        res.send(cache[url].content);
+        let cached = cache[url];
+        if (cached.content) { // Only send if content is available
+            console.debug("Returning cached content for " + url);
+            res.send(cache[url].content);
+        } else { // add to render queue
+            console.debug("Adding request for " + url + " to render queue");
+            cached.waitingForRender[req.id] = res;
+        }
         return;
     }
+    // put into cache to prevent loading the same url multiple times
+    let waiting = {};
+    waiting[req.id] = res;
+    cache[url] = {
+        time: Date.now(),
+        waitingForRender: waiting
+    };
     makeBrowser().then(browser => {
         browser.newPage().then(page => {
             console.log("Loading " + url);
             page.once("load", () => {
-                console.log("page loaded!")
+                console.debug("page loaded!")
             });
             page.on("domcontentloaded", () => {
-                console.log("domContentLoaded")
-            })
+                console.debug("domContentLoaded")
+            });
             let requestTimeout;
+            // Similar to prerender.io, listen for network requests and use that to decide when the page finished loading
             page.on("requestfinished", request => {
                 clearTimeout(requestTimeout);
                 requestTimeout = setTimeout(() => {
-                    console.log("all requests done!")
+                    console.debug("all requests done!")
 
                     let pageCleanupDone =() => {
                         page.content().then(content => {
-                            res.send(content);
+                            if (cache.hasOwnProperty(url)) {
+                                let cached = cache[url];
+                                // Send to all waiting requests
+                                for (let reqId in cached.waitingForRender) {
+                                    cached.waitingForRender[reqId].send(content);
+                                    delete cached.waitingForRender[reqId];
+                                }
+                            } else {
+                                res.send(content);
+                            }
                             cache[url] = {
                                 time: Date.now(),
                                 content: content
@@ -93,7 +120,7 @@ app.get("/render", (req, res) => {
                 }, REQUESTS_TIMEOUT);
             });
             page.goto(url).then(() => {
-                console.log("goto page done")
+                console.debug("goto page done")
             })
         })
     });
