@@ -1,0 +1,10 @@
+# Based on https://gist.github.com/thoop/8072354
+<IfModule mod_proxy_http.c>
+    RewriteEngine On
+    # Filter for crawlers
+	RewriteCond %{HTTP_USER_AGENT} googlebot|bingbot|yandex|baiduspider|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora\ link\ preview|showyoubot|outbrain|pinterest|slackbot|discordbot|vkShare|W3C_Validator [NC,OR]
+	RewriteCond %{QUERY_STRING} _escaped_fragment_
+
+    # Only rewrite html requests
+	RewriteRule ^(?!.*?(\.js|\.css|\.xml|\.less|\.png|\.jpg|\.jpeg|\.gif|\.pdf|\.doc|\.txt|\.ico|\.rss|\.zip|\.mp3|\.rar|\.exe|\.wmv|\.doc|\.avi|\.ppt|\.mpg|\.mpeg|\.tif|\.wav|\.mov|\.psd|\.ai|\.xls|\.mp4|\.m4a|\.swf|\.dat|\.dmg|\.iso|\.flv|\.m4v|\.torrent|\.ttf|\.woff))(.*) prerender.php [L]
+</IfModule>
