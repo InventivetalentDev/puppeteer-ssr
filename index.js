@@ -51,7 +51,7 @@ app.get("/render", (req, res) => {
     }
 
     let url = req.query.url;
-    console.log("Render request for " + url);
+    console.log("Render request for " + url + " by " + req.headers["user-agent"]);
     if (cache.hasOwnProperty(url)) {
         let cached = cache[url];
         if (cached.content) { // Only send if content is available
