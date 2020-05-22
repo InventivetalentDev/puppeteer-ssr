@@ -19,12 +19,20 @@ setInterval(()=>{
 
 let browserInstance;
 
+setInterval(() => {
+    if (browserInstance) {
+        browserInstance.close();
+        browserInstance = null;
+    }
+}, 120000);
+
 async function makeBrowser() {
     if (browserInstance) {
         return browserInstance;
     }
     browserInstance = await puppeteer.launch();
     browserInstance.on("disconnected", function () {
+        browserInstance.close();
         browserInstance = null
     });
     return browserInstance;
