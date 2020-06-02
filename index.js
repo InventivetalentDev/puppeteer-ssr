@@ -107,7 +107,7 @@ app.get("/render", (req, res) => {
                     console.debug("all requests done!")
                     page.off("requestfinished", requestCallback);
 
-                    let pageCleanupDone =() => {
+                    let pageCleanupDone = () => {
                         page.content().then(content => {
                             if (cache.hasOwnProperty(url)) {
                                 let cached = cache[url];
@@ -125,18 +125,26 @@ app.get("/render", (req, res) => {
                             };
                             page.close();
                             browserInUse--;
+                        }).catch(err => {
+                            console.error(err);
+                            page.close();
+                            browserInUse--;
                         })
                     };
 
-                    if(REMOVE_SCRIPTS) {
+                    if (REMOVE_SCRIPTS) {
                         page.evaluate(() => {
                             let scripts = document.getElementsByTagName("script");
                             let i = scripts.length;
                             while (i--) {
                                 scripts[i].parentNode.removeChild(scripts[i]);
                             }
-                        }).then(pageCleanupDone)
-                    }else{
+                        }).then(pageCleanupDone).catch(err=>{
+                            console.error(err);
+                            page.close();
+                            browserInUse--;
+                        })
+                    } else {
                         pageCleanupDone();
                     }
                 }, REQUESTS_TIMEOUT);
@@ -145,7 +153,7 @@ app.get("/render", (req, res) => {
             page.goto(url).then(() => {
                 console.debug("goto page done")
             })
-        })
+        }).catch(err => console.error(err));
     });
 });
 
