@@ -152,6 +152,10 @@ app.get("/render", (req, res) => {
             page.on("requestfinished", requestCallback);
             page.goto(url).then(() => {
                 console.debug("goto page done")
+            }).catch(err=>{
+                console.error(err);
+                page.close();
+                browserInUse--;
             })
         }).catch(err => console.error(err));
     });
