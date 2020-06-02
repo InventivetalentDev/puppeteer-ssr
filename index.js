@@ -18,11 +18,22 @@ setInterval(()=>{
 }, 30000);
 
 let browserInstance;
+let browserInUse = 0;
 
 setInterval(() => {
     if (browserInstance) {
-        browserInstance.close();
-        browserInstance = null;
+        console.log("Browser in use: " + browserInUse);
+        let tryCounter = 0;
+        let browserCloseTry = () => {
+            if (browserInUse > 0 && tryCounter++ < 20) { // wait
+                console.log("Browser close try #" + tryCounter);
+                setTimeout(browserCloseTry, 1000);
+            } else { // close it!
+                if (browserInstance) browserInstance.close();
+                browserInstance = null;
+            }
+        }
+        browserCloseTry();
     }
 }, 120000);
 
@@ -79,6 +90,7 @@ app.get("/render", (req, res) => {
         waitingForRender: waiting
     };
     makeBrowser().then(browser => {
+        browserInUse++;
         browser.newPage().then(page => {
             console.log("Loading " + url);
             page.once("load", () => {
@@ -112,6 +124,7 @@ app.get("/render", (req, res) => {
                                 content: content
                             };
                             page.close();
+                            browserInUse--;
                         })
                     };
 
