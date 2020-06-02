@@ -32,7 +32,7 @@ async function makeBrowser() {
     }
     browserInstance = await puppeteer.launch();
     browserInstance.on("disconnected", function () {
-        browserInstance.close();
+        if(browserInstance) browserInstance.close();
         browserInstance = null
     });
     return browserInstance;
