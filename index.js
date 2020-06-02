@@ -89,11 +89,11 @@ app.get("/render", (req, res) => {
             });
             let requestTimeout;
             // Similar to prerender.io, listen for network requests and use that to decide when the page finished loading
-            page.on("requestfinished", request => {
+            let requestCallback = request => {
                 clearTimeout(requestTimeout);
                 requestTimeout = setTimeout(() => {
                     console.debug("all requests done!")
-                    page.off("requestfinished");
+                    page.off("requestfinished", requestCallback);
 
                     let pageCleanupDone =() => {
                         page.content().then(content => {
@@ -127,7 +127,8 @@ app.get("/render", (req, res) => {
                         pageCleanupDone();
                     }
                 }, REQUESTS_TIMEOUT);
-            });
+            };
+            page.on("requestfinished", requestCallback);
             page.goto(url).then(() => {
                 console.debug("goto page done")
             })
