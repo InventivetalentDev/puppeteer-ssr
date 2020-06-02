@@ -8,7 +8,7 @@
     "start-pm2": "pm2 start --name ssr --time index.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
     "express-request-id": "^1.4.1",
