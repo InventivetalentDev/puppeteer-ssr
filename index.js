@@ -84,7 +84,7 @@ app.get("/render", (req, res) => {
             page.once("load", () => {
                 console.debug("page loaded!")
             });
-            page.on("domcontentloaded", () => {
+            page.once("domcontentloaded", () => {
                 console.debug("domContentLoaded")
             });
             let requestTimeout;
@@ -93,6 +93,7 @@ app.get("/render", (req, res) => {
                 clearTimeout(requestTimeout);
                 requestTimeout = setTimeout(() => {
                     console.debug("all requests done!")
+                    page.off("requestfinished");
 
                     let pageCleanupDone =() => {
                         page.content().then(content => {
