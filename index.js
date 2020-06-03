@@ -31,6 +31,7 @@ setInterval(() => {
             } else { // close it!
                 if (browserInstance) browserInstance.close();
                 browserInstance = null;
+                browserInUse = 0;
             }
         }
         browserCloseTry();
