@@ -34,6 +34,7 @@ setInterval(() => {
                 if (browserInstance) browserInstance.close();
                 browserInstance = null;
                 browserInUse = 0;
+                closing = false;
             }
         }
         browserCloseTry();
@@ -74,6 +75,7 @@ app.get("/render", (req, res) => {
     }
 
     if (closing) {
+        console.log("Blocking request since browser is closing");
         res.sendStatus(503);
         return;
     }
