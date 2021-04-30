@@ -19,12 +19,14 @@ setInterval(()=>{
 
 let browserInstance;
 let browserInUse = 0;
+let closing = false;
 
 setInterval(() => {
     if (browserInstance) {
         console.log("Browser in use: " + browserInUse);
         let tryCounter = 0;
         let browserCloseTry = () => {
+            closing = true;
             if (browserInUse > 0 && tryCounter++ < 20) { // wait
                 console.log("Browser close try #" + tryCounter);
                 setTimeout(browserCloseTry, 1000);
@@ -47,6 +49,7 @@ async function makeBrowser() {
         if(browserInstance) browserInstance.close();
         browserInstance = null
     });
+    closing = false;
     return browserInstance;
 }
 
@@ -68,6 +71,11 @@ app.get("/render", (req, res) => {
             res.sendStatus(401);
             return;
         }
+    }
+
+    if (closing) {
+        res.sendStatus(503);
+        return;
     }
 
     let url = req.query.url;
