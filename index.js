@@ -9,7 +9,7 @@ const REMOVE_SCRIPTS = config.removeScripts || true;
 const CACHE_DURATION = config.cacheDuration || 60000;
 
 const cache = {};
-setInterval(()=>{
+setInterval(() => {
     for (let k in cache) {
         if (Date.now() - cache[k].time > CACHE_DURATION) {
             delete cache[k];
@@ -47,7 +47,7 @@ async function makeBrowser() {
     }
     browserInstance = await puppeteer.launch();
     browserInstance.on("disconnected", function () {
-        if(browserInstance) browserInstance.close();
+        if (browserInstance) browserInstance.close();
         browserInstance = null
     });
     closing = false;
@@ -82,6 +82,7 @@ app.get("/render", (req, res) => {
 
     let url = req.query.url;
     console.log("Render request for " + url + " by " + req.headers["user-agent"]);
+    url = url.replace(/_escaped_fragment_/, ''); // remove that or it'll redirect loop and never load the actual page
     if (cache.hasOwnProperty(url)) {
         let cached = cache[url];
         if (cached.content) { // Only send if content is available
@@ -130,6 +131,7 @@ app.get("/render", (req, res) => {
                             } else {
                                 res.send(content);
                             }
+                            console.log("took " + ((Date.now() - cache[url].time) / 1000) + "s to load " + url);
                             cache[url] = {
                                 time: Date.now(),
                                 content: content
@@ -150,7 +152,7 @@ app.get("/render", (req, res) => {
                             while (i--) {
                                 scripts[i].parentNode.removeChild(scripts[i]);
                             }
-                        }).then(pageCleanupDone).catch(err=>{
+                        }).then(pageCleanupDone).catch(err => {
                             console.error(err);
                             page.close();
                             browserInUse--;
@@ -161,9 +163,9 @@ app.get("/render", (req, res) => {
                 }, REQUESTS_TIMEOUT);
             };
             page.on("requestfinished", requestCallback);
-            page.goto(url).then(() => {
+            page.goto(url, {timeout: 10000}).then(() => {
                 console.debug("goto page done")
-            }).catch(err=>{
+            }).catch(err => {
                 console.error(err);
                 page.close();
                 browserInUse--;
