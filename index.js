@@ -82,7 +82,7 @@ app.get("/render", (req, res) => {
 
     let url = req.query.url;
     console.log("Render request for " + url + " by " + req.headers["user-agent"]);
-    url = url.replace(/_escaped_fragment_/, ''); // remove that or it'll redirect loop and never load the actual page
+    url = url.replace(/_escaped_fragment_/g, ''); // remove that or it'll redirect loop and never load the actual page
     if (cache.hasOwnProperty(url)) {
         let cached = cache[url];
         if (cached.content) { // Only send if content is available
