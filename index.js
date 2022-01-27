@@ -80,7 +80,7 @@ app.get("/render", (req, res) => {
         return;
     }
 
-    res.header("Cache-Control", "public");
+    res.header("Cache-Control", "public, max-age=2629746");
 
     let url = req.query.url;
     console.log("Render request for " + url + " by " + req.headers["user-agent"]);
