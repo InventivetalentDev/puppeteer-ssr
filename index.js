@@ -83,7 +83,7 @@ app.get("/render", (req, res) => {
     res.header("Cache-Control", "public, max-age=2629746");
 
     let url = req.query.url;
-    console.log("Render request for " + url + " by " + req.header("user-agent"));
+    console.log("Render request for " + url + " by \"" + req.header("user-agent") + "\"");
     if (req.header("user-agent").includes("HeadlessChrome") && req.header("user-agent").includes("InventivePrerender")) {
         console.warn("render loop");
         return;
