@@ -84,6 +84,10 @@ app.get("/render", (req, res) => {
 
     let url = req.query.url;
     console.log("Render request for " + url + " by " + req.header("user-agent"));
+    if (req.header("user-agent").includes("HeadlessChrome") && req.header("user-agent").includes("InventivePrerender")) {
+        console.warn("render loop");
+        return;
+    }
     url = url.replace(/_escaped_fragment_/g, ''); // remove that or it'll redirect loop and never load the actual page
     if (cache.hasOwnProperty(url)) {
         let cached = cache[url];
@@ -103,9 +107,11 @@ app.get("/render", (req, res) => {
         time: Date.now(),
         waitingForRender: waiting
     };
-    makeBrowser().then(browser => {
+    makeBrowser().then(async browser => {
         browserInUse++;
+        const userAgent = await browser.userAgent();
         browser.newPage().then(page => {
+            page.setUserAgent(userAgent + " InventivePrerender");
             console.log("Loading " + url);
             page.once("load", () => {
                 console.debug("page loaded!")
