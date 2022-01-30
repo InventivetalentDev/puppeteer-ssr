@@ -83,7 +83,6 @@ app.get("/render", (req, res) => {
     res.header("Cache-Control", "public, max-age=2629746");
 
     let url = req.query.url;
-    console.log(req.headers);
     console.log("Render request for " + url + " by " + req.header("user-agent"));
     url = url.replace(/_escaped_fragment_/g, ''); // remove that or it'll redirect loop and never load the actual page
     if (cache.hasOwnProperty(url)) {
