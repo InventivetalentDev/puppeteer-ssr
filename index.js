@@ -171,7 +171,7 @@ app.get("/render", (req, res) => {
                 }, REQUESTS_TIMEOUT);
             };
             page.on("requestfinished", requestCallback);
-            page.goto(url, {timeout: 10000}).then(() => {
+            page.goto(url, {timeout: 30000}).then(() => {
                 console.debug("goto page done")
             }).catch(err => {
                 console.error(err);
