@@ -45,7 +45,7 @@ async function makeBrowser() {
     if (browserInstance) {
         return browserInstance;
     }
-    browserInstance = await puppeteer.launch();
+    browserInstance = await puppeteer.launch({headless: true, args: ['--js-flags="--max-old-space-size=1024"']});
     browserInstance.on("disconnected", function () {
         if (browserInstance) browserInstance.close();
         browserInstance = null
