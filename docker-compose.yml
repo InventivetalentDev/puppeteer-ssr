@@ -1,0 +1,8 @@
+version: '3'
+services:
+  ssr:
+    image: 'inventivetalent/prerender-ssr'
+    volumes:
+      - type: bind
+        source: ./config.js
+        target: /usr/src/app/config.js
