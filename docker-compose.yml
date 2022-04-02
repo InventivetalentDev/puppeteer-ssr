@@ -6,3 +6,5 @@ services:
       - type: bind
         source: ./config.js
         target: /usr/src/app/config.js
+    ports:
+      - "7462:7462"
