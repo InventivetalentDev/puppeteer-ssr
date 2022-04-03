@@ -54,6 +54,11 @@ async function makeBrowser() {
     return browserInstance;
 }
 
+
+function getIp(req) {
+    return req.get('cf-connecting-ip') || req.get('x-forwarded-for') || req.get("x-real-ip") || req.connection.remoteAddress || req.ip;
+}
+
 app.use(require("express-request-id")());
 
 app.get('/', (req, res) => res.send('Hello World!'))
@@ -61,14 +66,17 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.get("/render", (req, res) => {
     if (config.token) {
         if (!req.query.token && !req.headers.token) {
+            console.warn("unauthorized from " + getIp(req));
             res.sendStatus(401);
             return;
         }
         if (req.query.token && config.token !== req.query.token) {
+            console.warn("unauthorized from " + getIp(req));
             res.sendStatus(401);
             return;
         }
         if (req.headers.token && config.token !== req.headers.token) {
+            console.warn("unauthorized from " + getIp(req));
             res.sendStatus(401);
             return;
         }
