@@ -162,6 +162,7 @@ app.get("/render", (req, res) => {
                     };
 
                     page.evaluate((removeScripts) => {
+                        console.log("eval done")
                         if (removeScripts) {
                             let scripts = document.getElementsByTagName("script");
                             let i = scripts.length;
