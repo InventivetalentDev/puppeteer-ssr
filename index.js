@@ -161,21 +161,27 @@ app.get("/render", (req, res) => {
                         })
                     };
 
-                    if (REMOVE_SCRIPTS) {
-                        page.evaluate(() => {
+                    page.evaluate((removeScripts) => {
+                        if (removeScripts) {
                             let scripts = document.getElementsByTagName("script");
                             let i = scripts.length;
                             while (i--) {
                                 scripts[i].parentNode.removeChild(scripts[i]);
                             }
-                        }).then(pageCleanupDone).catch(err => {
-                            console.error(err);
-                            page.close();
-                            browserInUse--;
-                        })
-                    } else {
-                        pageCleanupDone();
-                    }
+                        }
+
+                        let exclusions = document.getElementsByClassName("exclude-from-ssr");
+                        let i = exclusions.length;
+                        while (i--) {
+                            exclusions[i].parentNode.removeChild(exclusions[i]);
+                        }
+                    }, REMOVE_SCRIPTS).then(pageCleanupDone).catch(err => {
+                        console.error(err);
+                        page.close();
+                        browserInUse--;
+                    })
+
+
                 }, REQUESTS_TIMEOUT);
             };
             page.on("requestfinished", requestCallback);
