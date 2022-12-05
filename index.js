@@ -92,7 +92,7 @@ app.get("/render", (req, res) => {
 
     let url = req.query.url;
     console.log("Render request for " + url + " by \"" + req.header("user-agent") + "\"");
-    if (req.header("user-agent").includes("HeadlessChrome") && req.header("user-agent").includes("InventivePrerender")) {
+    if (!!req.header("user-agent") && req.header("user-agent").includes("HeadlessChrome") && req.header("user-agent").includes("InventivePrerender")) {
         console.warn("render loop");
         return;
     }
