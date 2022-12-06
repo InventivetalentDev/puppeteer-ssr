@@ -4,7 +4,7 @@ const app = express();
 const config = require("./config.js");
 const port = config.port || 7462;
 
-const REQUESTS_TIMEOUT = config.requestsTimeout || 10000;
+const REQUESTS_TIMEOUT = config.requestsTimeout || 800;
 const REMOVE_SCRIPTS = config.removeScripts || true;
 const CACHE_DURATION = config.cacheDuration || 60000;
 
@@ -45,7 +45,7 @@ async function makeBrowser() {
     if (browserInstance) {
         return browserInstance;
     }
-    browserInstance = await puppeteer.launch({headless: true, args: ['--js-flags="--max-old-space-size=1024"']});
+    browserInstance = await puppeteer.launch({headless: true, args: ['--js-flags="--max-old-space-size=1024"', '--no-sandbox', '--disable-setuid-sandbox', '--disk-cache-dir=/tmp/ssr-cache']});
     browserInstance.on("disconnected", function () {
         if (browserInstance) browserInstance.close();
         browserInstance = null
@@ -132,10 +132,11 @@ app.get("/render", (req, res) => {
             let requestCallback = request => {
                 clearTimeout(requestTimeout);
                 requestTimeout = setTimeout(() => {
-                    console.debug("all requests done!")
+                    console.debug("requestTimeout reached")
                     page.off("requestfinished", requestCallback);
 
                     let pageCleanupDone = () => {
+                        console.debug("pageCleanupDone")
                         page.content().then(content => {
                             if (cache.hasOwnProperty(url)) {
                                 let cached = cache[url];
