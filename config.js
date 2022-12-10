@@ -1,4 +1,6 @@
 module.exports = {
     port: 7462,
-    token: "12345" // Token for render requests
+    token: "12345", // Token for render requests
+    removeScripts: false,
+    removeSelectors: []
 };

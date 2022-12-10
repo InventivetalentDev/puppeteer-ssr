@@ -4,8 +4,9 @@ const app = express();
 const config = require("./config.js");
 const port = config.port || 7462;
 
-const REQUESTS_TIMEOUT = config.requestsTimeout || 800;
+const REQUESTS_TIMEOUT = config.requestsTimeout || 600;
 const REMOVE_SCRIPTS = config.removeScripts || true;
+const REMOVE_SELECTORS = config.removeSelectors || [];
 const CACHE_DURATION = config.cacheDuration || 60000;
 
 const cache = {};
@@ -124,9 +125,39 @@ app.get("/render", (req, res) => {
             page.once("load", () => {
                 console.debug("page loaded!")
             });
-            page.once("domcontentloaded", () => {
-                console.debug("domContentLoaded")
-            });
+
+            function doRemovals() {
+                return page.evaluate((removeScripts, removeSelectors) => {
+                    console.debug("eval")
+
+                    if (removeScripts) {
+                        let scripts = document.getElementsByTagName("script");
+                        let i = scripts.length;
+                        while (i--) {
+                            scripts[i].parentNode.removeChild(scripts[i]);
+                        }
+                    }
+
+                    for (let sel of removeSelectors) {
+                        let elements = document.querySelectorAll(sel);
+                        let i = elements.length;
+                        while (i--) {
+                            elements[i].parentNode.removeChild(elements[i]);
+                        }
+                    }
+
+                    let exclusions = document.getElementsByClassName("exclude-from-ssr");
+                    let i = exclusions.length;
+                    while (i--) {
+                        exclusions[i].parentNode.removeChild(exclusions[i]);
+                    }
+
+                    console.debug("eval done")
+                }, REMOVE_SCRIPTS, REMOVE_SELECTORS).catch(err => {
+                    console.error(err);
+                })
+            }
+
             let requestTimeout;
             // Similar to prerender.io, listen for network requests and use that to decide when the page finished loading
             let requestCallback = request => {
@@ -162,31 +193,23 @@ app.get("/render", (req, res) => {
                         })
                     };
 
-                    page.evaluate((removeScripts) => {
-                        console.log("eval done")
-                        if (removeScripts) {
-                            let scripts = document.getElementsByTagName("script");
-                            let i = scripts.length;
-                            while (i--) {
-                                scripts[i].parentNode.removeChild(scripts[i]);
-                            }
-                        }
-
-                        let exclusions = document.getElementsByClassName("exclude-from-ssr");
-                        let i = exclusions.length;
-                        while (i--) {
-                            exclusions[i].parentNode.removeChild(exclusions[i]);
-                        }
-                    }, REMOVE_SCRIPTS).then(pageCleanupDone).catch(err => {
-                        console.error(err);
-                        page.close();
-                        browserInUse--;
-                    })
+                    doRemovals().then(() => pageCleanupDone());
 
 
                 }, REQUESTS_TIMEOUT);
             };
-            page.on("requestfinished", requestCallback);
+
+
+            page.once("domcontentloaded", () => {
+                console.debug("domContentLoaded");
+
+                doRemovals().then(() => {
+                    console.log("eval done")
+                    page.on("requestfinished", () => requestCallback());
+                });
+            });
+
+
             page.goto(url, {timeout: 30000}).then(() => {
                 console.debug("goto page done")
             }).catch(err => {
