@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const express = require('express');
 const app = express();
 const config = require("./config.js");
-const port = config.port || 7462;
+const port = process.env.PORT || config.port || 7462;
 
 const REQUESTS_TIMEOUT = config.requestsTimeout || 600;
 const REMOVE_SCRIPTS = config.removeScripts || true;
