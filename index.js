@@ -193,22 +193,21 @@ app.get("/render", (req, res) => {
                                 time: Date.now(),
                                 content: content
                             };
-                            page.close().catch(e => {
-                                console.warn(e)
-                            });
                             pending--;
                             browserInUse--;
-                        }).catch(err => {
-                            console.error(err);
                             page.close().catch(e => {
                                 console.warn(e)
                             });
+                        }).catch(err => {
+                            console.warn(err);
                             browserInUse--;
+                            page.close().catch(e => {
+                                console.warn(e)
+                            });
                         })
                     };
 
                     doRemovals().then(() => pageCleanupDone());
-
 
                 }, REQUESTS_TIMEOUT);
             };
@@ -227,7 +226,7 @@ app.get("/render", (req, res) => {
             page.goto(url, {timeout: 30000}).then(() => {
                 console.debug("goto page done")
             }).catch(err => {
-                console.error(err);
+                console.warn(err);
                 page.close();
                 browserInUse--;
             })
