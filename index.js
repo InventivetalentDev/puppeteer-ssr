@@ -4,10 +4,11 @@ const app = express();
 const config = require("./config.js");
 const port = process.env.PORT || config.port || 7462;
 
-const REQUESTS_TIMEOUT = config.requestsTimeout || 600;
-const REMOVE_SCRIPTS = config.removeScripts || true;
-const REMOVE_SELECTORS = config.removeSelectors || [];
-const CACHE_DURATION = config.cacheDuration || 60000;
+const TOKEN = process.env.TOKEN || config.token || "12345";
+const REQUESTS_TIMEOUT = process.env.REQUESTS_TIMEOUT || config.requestsTimeout || 600;
+const REMOVE_SCRIPTS = process.env.REMOVE_SCRIPTS || config.removeScripts || true;
+const REMOVE_SELECTORS = process.env.REMOVE_SELECTORS?.split(',') || config.removeSelectors || [];
+const CACHE_DURATION = process.env.CACHE_DURATION || config.cacheDuration || 60000;
 
 const cache = {};
 setInterval(() => {
@@ -65,18 +66,18 @@ app.use(require("express-request-id")());
 app.get('/', (req, res) => res.send('Hello World!'))
 
 app.get("/render", (req, res) => {
-    if (config.token) {
+    if (TOKEN) {
         if (!req.query.token && !req.headers.token) {
             console.warn("unauthorized from " + getIp(req));
             res.sendStatus(401);
             return;
         }
-        if (req.query.token && config.token !== req.query.token) {
+        if (req.query.token && TOKEN !== req.query.token) {
             console.warn("unauthorized from " + getIp(req));
             res.sendStatus(401);
             return;
         }
-        if (req.headers.token && config.token !== req.headers.token) {
+        if (req.headers.token && TOKEN !== req.headers.token) {
             console.warn("unauthorized from " + getIp(req));
             res.sendStatus(401);
             return;
