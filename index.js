@@ -227,8 +227,10 @@ app.get("/render", (req, res) => {
                 console.debug("goto page done")
             }).catch(err => {
                 console.warn(err);
-                page.close();
                 browserInUse--;
+                page.close().catch(e => {
+                    console.warn(e);
+                })
             })
         }).catch(err => console.error(err));
     });
