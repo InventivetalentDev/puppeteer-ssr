@@ -22,6 +22,7 @@ setInterval(() => {
 let browserInstance;
 let browserInUse = 0;
 let closing = false;
+let pending = 0;
 
 setInterval(() => {
     if (browserInstance) {
@@ -110,6 +111,8 @@ app.get("/render", (req, res) => {
         }
         return;
     }
+    pending++;
+    console.log("pending", pending)
     // put into cache to prevent loading the same url multiple times
     let waiting = {};
     waiting[req.id] = res;
@@ -185,19 +188,16 @@ app.get("/render", (req, res) => {
                                 time: Date.now(),
                                 content: content
                             };
-                            try {
-                                page.close()
-                            } catch (e) {
+                            page.close().catch(e => {
                                 console.warn(e)
-                            }
+                            });
+                            pending--;
                             browserInUse--;
                         }).catch(err => {
                             console.error(err);
-                            try {
-                                page.close()
-                            } catch (e) {
+                            page.close().catch(e => {
                                 console.warn(e)
-                            }
+                            });
                             browserInUse--;
                         })
                     };
