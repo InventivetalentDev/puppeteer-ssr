@@ -17,7 +17,7 @@ setInterval(() => {
             delete cache[k];
         }
     }
-}, 30000);
+}, 10000);
 
 let browserInstance;
 let browserInUse = 0;
@@ -185,11 +185,19 @@ app.get("/render", (req, res) => {
                                 time: Date.now(),
                                 content: content
                             };
-                            page.close();
+                            try {
+                                page.close()
+                            } catch (e) {
+                                console.warn(e)
+                            }
                             browserInUse--;
                         }).catch(err => {
                             console.error(err);
-                            page.close();
+                            try {
+                                page.close()
+                            } catch (e) {
+                                console.warn(e)
+                            }
                             browserInUse--;
                         })
                     };
