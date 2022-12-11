@@ -9,6 +9,7 @@ const REQUESTS_TIMEOUT = process.env.REQUESTS_TIMEOUT || config.requestsTimeout 
 const REMOVE_SCRIPTS = process.env.REMOVE_SCRIPTS || config.removeScripts || true;
 const REMOVE_SELECTORS = process.env.REMOVE_SELECTORS?.split(',') || config.removeSelectors || [];
 const CACHE_DURATION = process.env.CACHE_DURATION || config.cacheDuration || 60000;
+const MAX_CONCURRENT = process.env.MAX_CONCURRENT || config.maxConcurrent || 5;
 
 const cache = {};
 setInterval(() => {
@@ -109,6 +110,10 @@ app.get("/render", (req, res) => {
             console.debug("Adding request for " + url + " to render queue");
             cached.waitingForRender[req.id] = res;
         }
+        return;
+    }
+    if (pending > MAX_CONCURRENT) {
+        res.status(503).end();
         return;
     }
     pending++;
