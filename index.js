@@ -197,13 +197,11 @@ app.get("/render", (req, res) => {
                             pending--;
                             browserInUse--;
                             page.close().catch(e => {
-                                console.warn(e)
                             });
                         }).catch(err => {
                             console.warn("page content failed", err);
                             browserInUse--;
                             page.close().catch(e => {
-                                console.warn(e)
                             });
                         })
                     };
@@ -231,7 +229,6 @@ app.get("/render", (req, res) => {
                 browserInUse--;
                 pending--;
                 page.close().catch(e => {
-                    console.warn(e);
                 })
             })
         }).catch(err => {
