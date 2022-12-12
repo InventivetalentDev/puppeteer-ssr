@@ -178,7 +178,7 @@ app.get("/render", (req, res) => {
 
                     let pageCleanupDone = () => {
                         console.debug("pageCleanupDone")
-                        page.content().then(content => {
+                        return page.content().then(content => {
                             if (cache.hasOwnProperty(url)) {
                                 let cached = cache[url];
                                 // Send to all waiting requests
