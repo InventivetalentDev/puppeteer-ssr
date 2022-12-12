@@ -113,6 +113,7 @@ app.get("/render", (req, res) => {
         return;
     }
     if (pending > MAX_CONCURRENT) {
+        console.log("pending", pending);
         res.status(503).end();
         return;
     }
