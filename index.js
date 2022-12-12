@@ -164,7 +164,7 @@ app.get("/render", (req, res) => {
 
                     console.debug("eval done")
                 }, REMOVE_SCRIPTS, REMOVE_SELECTORS).catch(err => {
-                    console.error(err);
+                    console.warn("evail failed", err);
                 })
             }
 
@@ -200,7 +200,7 @@ app.get("/render", (req, res) => {
                                 console.warn(e)
                             });
                         }).catch(err => {
-                            console.warn(err);
+                            console.warn("page content failed", err);
                             browserInUse--;
                             page.close().catch(e => {
                                 console.warn(e)
@@ -227,13 +227,16 @@ app.get("/render", (req, res) => {
             page.goto(url, {timeout: 30000}).then(() => {
                 console.debug("goto page done")
             }).catch(err => {
-                console.warn(err);
+                console.warn("goto page failed", err);
                 browserInUse--;
+                pending--;
                 page.close().catch(e => {
                     console.warn(e);
                 })
             })
-        }).catch(err => console.error(err));
+        }).catch(err => {
+            console.error("newPage failed", err)
+        });
     });
 });
 
