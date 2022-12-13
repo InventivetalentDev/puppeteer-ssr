@@ -9,6 +9,7 @@ import * as cache from "./cache";
 import * as render from "./render";
 
 import * as logging from "./logging";
+import * as os from "os";
 
 function getIp(req: Request) {
     return req.get('cf-connecting-ip') || req.get('x-forwarded-for') || req.get("x-real-ip") || req.connection.remoteAddress || req.ip;
@@ -41,7 +42,7 @@ function runServer() {
 
 
         let url = req.query.url as string;
-        logging.log(`"Render request for ${ url }  by "${ req.header("user-agent") }" from ${ getIp(req) }`);
+        logging.log(`Render request for ${ url } by "${ req.header("user-agent") }" from ${ getIp(req) }`);
 
         if (!!req.header("user-agent") && req.header("user-agent")?.includes("HeadlessChrome") && req.header("user-agent")?.includes("InventivePrerender")) {
             logging.warn("render loop");
@@ -50,6 +51,8 @@ function runServer() {
         url = url.replace(/_escaped_fragment_/g, ''); // remove that or it'll redirect loop and never load the actual page
 
         res.header("Cache-Control", "public, max-age=2629746");
+
+        res.header("X-Prerender-Server", os.hostname());
 
         let rendered = await cache.getOr(url, (key: string) => {
             return new Promise<string>(resolve => {
