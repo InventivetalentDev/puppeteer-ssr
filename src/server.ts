@@ -16,7 +16,9 @@ function getIp(req: Request) {
 
 
 function runServer() {
-    app.get('/', (req: Request, res: Response) => res.send('Hello World!'))
+    app.get('/', (req: Request, res: Response) => {
+        res.redirect("https://github.com/InventivetalentDev/puppeteer-ssr");
+    })
 
     app.get("/render", async (req: Request, res: Response) => {
         if (process.env.TOKEN) {
