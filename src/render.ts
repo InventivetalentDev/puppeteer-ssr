@@ -127,6 +127,8 @@ async function waitForNetworkRequests(page: Page) {
             }, Number(process.env.REQUESTS_TIMEOUT) || 500);
         };
         page.on("requestfinished", handleRequest);
+
+        setTimeout(() => handleRequest(), Number(process.env.REQUESTS_TIMEOUT) || 500);
     })
 }
 
