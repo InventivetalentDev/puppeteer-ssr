@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
-const express = require('express');
+import express from 'express';
+
 const port = process.env.PORT || 80;
 const app = express();
 
-const browser = require("./browser");
-const cache = require("./cache");
-const render = require("./render");
+import * as cache from "./cache";
+import * as render from "./render";
 
 import * as logging from "./logging";
 
@@ -16,8 +16,6 @@ function getIp(req: Request) {
 
 
 function runServer() {
-    app.use(require("express-request-id")());
-
     app.get('/', (req: Request, res: Response) => res.send('Hello World!'))
 
     app.get("/render", async (req: Request, res: Response) => {

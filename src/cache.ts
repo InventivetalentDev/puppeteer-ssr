@@ -1,9 +1,10 @@
 import { AsyncLoadingCache, AsyncMappingFunction } from "@inventivetalent/loading-cache";
 
-const { Caches } = require("@inventivetalent/loading-cache");
-const { Time } = require("@inventivetalent/time");
+import { Caches } from "@inventivetalent/loading-cache";
+import { Time } from "@inventivetalent/time";
+
 const cache: AsyncLoadingCache<string, string> = Caches.builder()
-    .expireAfterWrite(Time.minutes(1))
+    .expireAfterWrite(Time.seconds(Number(process.env.MEMORY_CACHE_DURATION) || 60))
     .recordStats(false)
     .buildAsync();
 

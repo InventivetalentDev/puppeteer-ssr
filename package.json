@@ -16,7 +16,6 @@
     "@inventivetalent/loading-cache": "^0.6.9",
     "@inventivetalent/time": "^1.0.3",
     "express": "^4.17.1",
-    "express-request-id": "^1.4.1",
     "puppeteer-core": "^19.4.0"
   },
   "devDependencies": {

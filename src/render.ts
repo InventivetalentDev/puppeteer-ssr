@@ -1,7 +1,7 @@
 import { QueueItem } from "./typings";
 import { Page } from "puppeteer-core";
 
-const browser = require("./browser");
+import { getBrowser } from "./browser";
 import * as logging from "./logging";
 
 const queue: QueueItem[] = [];
@@ -26,7 +26,7 @@ async function processNext() {
 
     logging.info("rendering " + url);
 
-    const instance = await browser.getBrowser();
+    const instance = await getBrowser();
 
     const userAgent = await instance.userAgent();
     const page = await instance.newPage();
