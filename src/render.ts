@@ -82,8 +82,19 @@ async function processNext() {
 
     let { url, resolve } = queue.pop()!;
 
+    let resolved = false;
+    let timeout = setTimeout(() => {
+        resolved = true;
+        resolve(undefined);
+        logging.warn("render request timed out");
+    }, Number(process.env.RENDER_TIMEOUT) || 30000);
     try {
-        return doRender(url, resolve).catch(e => {
+        return doRender(url, (s: string | undefined) => {
+            if (resolved) return;
+            resolve(s);
+            resolved = true;
+            clearTimeout(timeout);
+        }).catch(e => {
             console.warn(e);
             resolve(undefined);
         });
