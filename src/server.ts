@@ -41,7 +41,7 @@ function runServer() {
 
 
         let url = req.query.url as string;
-        logging.log("Render request for " + url + " by \"" + req.header("user-agent") + "\"");
+        logging.log(`"Render request for ${ url }  by "${ req.header("user-agent") }" from ${ getIp(req) }`);
 
         if (!!req.header("user-agent") && req.header("user-agent")?.includes("HeadlessChrome") && req.header("user-agent")?.includes("InventivePrerender")) {
             logging.warn("render loop");
