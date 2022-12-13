@@ -61,7 +61,7 @@ async function processNext() {
 
     let content = await page.content();
 
-    logging.info("took " + ((Date.now() - start) / 1000) + "s to load " + url);
+    logging.info("took " + ((Date.now() - start) / 1000) + "s to render " + url);
 
     await page.close();
 
