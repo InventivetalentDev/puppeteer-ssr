@@ -1,4 +1,4 @@
-import { QueueItem } from "./typings";
+import { QueueItem } from "../typings";
 import { Page } from "puppeteer";
 
 const browser = require("./browser");
