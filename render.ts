@@ -11,6 +11,8 @@ let pending = 0;
 
 async function enqueue(url: string, resolve: (v: string) => void) {
     queue.unshift({ url, resolve });
+
+    logging.log("queue size: " + queue.length);
 }
 
 
