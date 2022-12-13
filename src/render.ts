@@ -25,43 +25,53 @@ async function doRender(url: string, resolve: (v: string | undefined) => void) {
     logging.info("rendering " + url);
 
     const instance = await getBrowser();
-
-    const userAgent = await instance.userAgent();
     const page = await instance.newPage();
-    await page.setUserAgent(userAgent + " " + (process.env.USER_AGENT || "InventivePrerender"));
-    logging.log("Loading " + url);
 
-    page.once("load", () => {
-        logging.debug("page loaded!")
-    });
+    let content = undefined;
 
-    const domPromise = new Promise<void>(resolve => {
-        page.once('domcontentloaded', () => resolve());
-    });
+    try {
+        const userAgent = await instance.userAgent();
+        await page.setUserAgent(userAgent + " " + (process.env.USER_AGENT || "InventivePrerender"));
+        logging.log("Loading " + url);
 
-    await page.goto(url, { timeout: Number(process.env.GOTO_TIMEOUT) || 30000 });
-    logging.debug("goto page done");
+        page.once("load", () => {
+            logging.debug("page loaded!")
+        });
 
-    // wait for dom to load
-    logging.debug("waiting for dom...");
-    await domPromise;
-    logging.log("domContentLoaded");
+        const domPromise = new Promise<void>(resolve => {
+            page.once('domcontentloaded', () => resolve());
+        });
 
-    // first round of removals
-    await doRemovals(page);
+        await page.goto(url, { timeout: Number(process.env.GOTO_TIMEOUT) || 30000 });
+        logging.debug("goto page done");
 
-    // let network requests finish
-    await waitForNetworkRequests(page);
+        // wait for dom to load
+        logging.debug("waiting for dom...");
+        await domPromise;
+        logging.log("domContentLoaded");
 
-    // remove again
-    await doRemovals(page);
+        // first round of removals
+        await doRemovals(page);
+
+        // let network requests finish
+        await waitForNetworkRequests(page);
+
+        // remove again
+        await doRemovals(page);
 
 
-    let content = await page.content();
+        content = await page.content();
 
-    logging.info("took " + ((Date.now() - start) / 1000) + "s to render " + url);
+        logging.info("took " + ((Date.now() - start) / 1000) + "s to render " + url);
 
-    await page.close();
+        await page.close();
+    } catch (e) {
+        console.warn(e);
+        try {
+            page.close();
+        } catch (e) {
+        }
+    }
 
     pending--;
 
