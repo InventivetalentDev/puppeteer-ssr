@@ -7,15 +7,25 @@ import * as logging from "./logging";
 const queue: QueueItem[] = [];
 let pending = 0;
 
+function logStats() {
+    logging.log("queue size: " + queue.length);
+    logging.log("pending: " + pending);
+}
+
 async function enqueue(url: string, resolve: (v: string) => void) {
     queue.unshift({ url, resolve });
 
-    logging.log("queue size: " + queue.length);
+    logStats();
 }
 
 
 async function processNext() {
     if (queue.length <= 0) {
+        return;
+    }
+
+    if (pending > (Number(process.env.MAX_CONCURRENT) || 5)) {
+        logStats();
         return;
     }
 
@@ -64,6 +74,10 @@ async function processNext() {
     logging.info("took " + ((Date.now() - start) / 1000) + "s to render " + url);
 
     await page.close();
+
+    pending--;
+
+    logStats();
 
     return resolve(content);
 }
