@@ -1,0 +1,13 @@
+{
+  "name": "puppeteer-ssr",
+  "description": "Server-Side-Rendering using Puppeteer",
+  "repository": "https://github.com/InventivetalentDev/puppeteer-ssr",
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-google-chrome.git"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
