@@ -1,6 +1,4 @@
-import { Browser } from "puppeteer";
-
-const puppeteer = require("puppeteer");
+import { Browser, launch } from "puppeteer-core";
 
 let browserInstance: Browser | undefined;
 
@@ -9,7 +7,7 @@ async function getBrowser() {
         return browserInstance;
     }
 
-    browserInstance = await puppeteer.launch({
+    browserInstance = await launch({
         headless: true,
         executablePath: process.env.GOOGLE_CHROME_BIN,
         args: ['--js-flags="--max-old-space-size=1024"', '--no-sandbox', '--disable-setuid-sandbox', '--disk-cache-dir=/tmp/ssr-cache']

@@ -1,9 +1,7 @@
-import { QueueItem } from "../typings";
-import { Page } from "puppeteer";
+import { QueueItem } from "./typings";
+import { Page } from "puppeteer-core";
 
 const browser = require("./browser");
-const cache = require("./cache");
-const render = require("./render");
 import * as logging from "./logging";
 
 const queue: QueueItem[] = [];
