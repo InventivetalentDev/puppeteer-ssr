@@ -12,26 +12,14 @@ function logStats() {
     logging.log("pending: " + pending);
 }
 
-async function enqueue(url: string, resolve: (v: string) => void) {
+async function enqueue(url: string, resolve: (v: string | undefined) => void) {
     queue.unshift({ url, resolve });
 
     logStats();
 }
 
-
-async function processNext() {
-    if (queue.length <= 0) {
-        return;
-    }
-
-    if (pending > (Number(process.env.MAX_CONCURRENT) || 5)) {
-        logStats();
-        return;
-    }
-
+async function doRender(url: string, resolve: (v: string | undefined) => void) {
     let start = Date.now();
-
-    let { url, resolve } = queue.pop()!;
     pending++;
 
     logging.info("rendering " + url);
@@ -80,6 +68,28 @@ async function processNext() {
     logStats();
 
     return resolve(content);
+}
+
+async function processNext() {
+    if (queue.length <= 0) {
+        return;
+    }
+
+    if (pending > (Number(process.env.MAX_CONCURRENT) || 5)) {
+        logStats();
+        return;
+    }
+
+    let { url, resolve } = queue.pop()!;
+
+    try {
+        return doRender(url, resolve).catch(e => {
+            console.warn(e);
+            resolve(undefined);
+        });
+    } catch (e) {
+        logging.warn(e);
+    }
 }
 
 async function waitForNetworkRequests(page: Page) {

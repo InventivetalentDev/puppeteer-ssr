@@ -55,12 +55,16 @@ function runServer() {
         res.header("X-Prerender-Server", os.hostname());
 
         let rendered = await cache.getOr(url, (key: string) => {
-            return new Promise<string>(resolve => {
+            return new Promise<string | undefined>(resolve => {
                 render.enqueue(key, resolve);
             })
         });
 
-        res.send(rendered);
+        if (!rendered) {
+            res.status(503);
+        } else {
+            res.send(rendered);
+        }
 
         res.end();
     });

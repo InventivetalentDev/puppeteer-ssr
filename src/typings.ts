@@ -1,6 +1,6 @@
 interface QueueItem {
     url: string;
-    resolve: (v: string) => void
+    resolve: (v: string | undefined) => void
 }
 
 export { QueueItem };
