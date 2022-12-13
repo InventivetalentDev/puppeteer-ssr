@@ -136,7 +136,9 @@ async function doRemovals(page: Page) {
 
 setInterval(() => {
     try {
-        processNext();
+        processNext().catch(e => {
+            console.warn(e);
+        });
     } catch (e) {
         logging.warn(e);
     }
