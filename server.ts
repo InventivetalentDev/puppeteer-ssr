@@ -59,6 +59,7 @@ function runServer() {
 
         res.send(rendered);
 
+        res.end();
     });
 
     app.listen(port, () => logging.log(`app listening on port ${ port }`))
