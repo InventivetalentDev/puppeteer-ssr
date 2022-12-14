@@ -30,12 +30,12 @@
     },
     "MEMORY_CACHE_DURATION": {
       "description": "time (seconds) to keep rendered pages in memory",
-      "value": 60,
+      "value": "60",
       "required": false
     },
     "REDIS_CACHE_DURATION": {
       "description": "time (minutes) to keep rendered pages in redis",
-      "value": 15,
+      "value": "15",
       "required": false
     },
     "USER_AGENT": {
@@ -45,30 +45,30 @@
     "REMOVE_SCRIPTS": {
       "description": "whether to remove <script> tags after render",
       "required": false,
-      "value": false
+      "value": "false"
     },
     "REMOVE_SELECTORS": {
       "description": "comma-separated list of selectors to remove from the DOM",
       "required": false
     },
     "GOTO_TIMEOUT": {
-      "value": 3000,
+      "value": "3000",
       "required": false
     },
     "REQUESTS_TIMEOUT": {
-      "value": 500,
+      "value": "500",
       "required": false
     },
     "RENDER_TIMEOUT": {
-      "value": 30000,
+      "value": "30000",
       "required": false
     },
     "PROCESSING_INTERVAL": {
-      "value": 500,
+      "value": "500",
       "required": false
     },
     "MAX_CONCURRENT": {
-      "value": 5,
+      "value": "5",
       "required": false
     }
   }
