@@ -136,12 +136,13 @@ async function waitForNetworkRequests(page: Page) {
 
 async function doRemovals(page: Page) {
     logging.debug("removing stuff")
-    return page.evaluate((removeScripts: boolean, removeSelectors?: string[]) => {
-        console.debug("eval")
+    return page.evaluate((logging, removeScripts: boolean, removeSelectors?: string[]) => {
+        logging.debug("eval")
 
         if (removeScripts) {
             let scripts = document.getElementsByTagName("script");
             let i = scripts.length;
+            logging.debug("removing " + i + " script tags");
             while (i--) {
                 scripts[i].parentNode?.removeChild(scripts[i]);
             }
@@ -151,6 +152,7 @@ async function doRemovals(page: Page) {
             for (let sel of removeSelectors) {
                 let elements = document.querySelectorAll(sel);
                 let i = elements.length;
+                logging.debug("removing " + i + " selectors");
                 while (i--) {
                     elements[i].parentNode?.removeChild(elements[i]);
                 }
@@ -159,12 +161,13 @@ async function doRemovals(page: Page) {
 
         let exclusions = document.getElementsByClassName("exclude-from-ssr");
         let i = exclusions.length;
+        logging.debug("removing " + i + " ssr exclusions tags");
         while (i--) {
             exclusions[i].parentNode?.removeChild(exclusions[i]);
         }
 
-        console.debug("eval done")
-    }, process.env.REMOVE_SCRIPTS === "true", process.env.REMOVE_SELECTORS?.split(",")).catch(err => {
+        logging.debug("eval done")
+    }, logging, process.env.REMOVE_SCRIPTS === "true", process.env.REMOVE_SELECTORS?.split(",")).catch(err => {
         logging.warn("evail failed", err);
     })
 }
