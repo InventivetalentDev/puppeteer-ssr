@@ -2,20 +2,22 @@
 
 A simple serverside rendering express app using [Puppeteer](https://github.com/puppeteer/puppeteer)
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Usage
 
-* Clone this repo 
+* Clone this repo
 * cd into the directory
 * install dependencies
+
 ```shell script
 git clone https://github.com/InventivetalentDev/puppeteer-ssr.git
 cd puppeteer-ssr
 npm install
+npm run build
 ```
 
-
-* Update the config @ `config.js`
-
+* Set environment variables (see app.json)
 
 * Start the server
 ```shell script
