@@ -139,7 +139,7 @@ async function waitForNetworkRequests(page: Page) {
 async function doRemovals(page: Page) {
     logging.debug("removing stuff")
     const consoleHandler = (msg: ConsoleMessage) => {
-        logging.debug(msg.text());
+        logging.debug("[browser] ", msg.text());
     };
     page.on('console', consoleHandler)
     return page.evaluate((removeScripts: boolean, removeSelectors?: string[]) => {
