@@ -10,7 +10,7 @@ async function getBrowser() {
     browserInstance = await launch({
         headless: true,
         executablePath: process.env.GOOGLE_CHROME_BIN,
-        args: ['--js-flags="--max-old-space-size=1024"', '--no-sandbox', '--disable-setuid-sandbox', '--disk-cache-dir=/tmp/ssr-cache']
+        args: ['--js-flags="--max-old-space-size=1024"', '--no-sandbox', '--disable-setuid-sandbox', '--disable-3d-apis', '--disk-cache-dir=/tmp/ssr-cache']
     });
     browserInstance!.on("disconnected", function () {
         if (browserInstance) {
