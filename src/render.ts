@@ -1,5 +1,5 @@
 import { QueueItem } from "./typings";
-import { Page } from "puppeteer-core";
+import { ConsoleMessage, Page, PageEventObject } from "puppeteer-core";
 
 import { getBrowser } from "./browser";
 import * as logging from "./logging";
@@ -138,6 +138,10 @@ async function waitForNetworkRequests(page: Page) {
 
 async function doRemovals(page: Page) {
     logging.debug("removing stuff")
+    const consoleHandler = (msg: ConsoleMessage) => {
+        logging.debug(msg.text());
+    };
+    page.on('console', consoleHandler)
     return page.evaluate((removeScripts: boolean, removeSelectors?: string[]) => {
         console.debug("eval")
 
@@ -171,6 +175,8 @@ async function doRemovals(page: Page) {
         console.debug("eval done")
     }, process.env.REMOVE_SCRIPTS === "true", process.env.REMOVE_SELECTORS?.split(",")).catch(err => {
         logging.warn("evail failed", err);
+    }).then(() => {
+        page.off('console', consoleHandler)
     })
 }
 
