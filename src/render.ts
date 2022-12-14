@@ -148,7 +148,8 @@ async function doRemovals(page: Page) {
         if (removeScripts) {
             let scripts = document.getElementsByTagName("script");
             let i = scripts.length;
-            console.debug("removing " + i + " script tags");
+            if (i > 0)
+                console.debug("removing " + i + " script tags");
             while (i--) {
                 scripts[i].parentNode?.removeChild(scripts[i]);
             }
@@ -158,7 +159,8 @@ async function doRemovals(page: Page) {
             for (let sel of removeSelectors) {
                 let elements = document.querySelectorAll(sel);
                 let i = elements.length;
-                console.debug("removing " + i + " selectors");
+                if (i > 0)
+                    console.debug("removing " + i + " selectors");
                 while (i--) {
                     elements[i].parentNode?.removeChild(elements[i]);
                 }
@@ -167,7 +169,8 @@ async function doRemovals(page: Page) {
 
         let exclusions = document.getElementsByClassName("exclude-from-ssr");
         let i = exclusions.length;
-        console.debug("removing " + i + " ssr exclusions tags");
+        if (i > 0)
+            console.debug("removing " + i + " ssr exclusions tags");
         while (i--) {
             exclusions[i].parentNode?.removeChild(exclusions[i]);
         }
