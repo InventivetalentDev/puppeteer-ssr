@@ -52,6 +52,7 @@ function runServer() {
 
         res.header("Cache-Control", "public, max-age=2629746");
 
+        res.header("X-Prerendered-At", new Date().toISOString());
         res.header("X-Prerender-Server", os.hostname());
 
         let rendered = await cache.getOr(url, (key: string) => {
