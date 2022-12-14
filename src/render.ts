@@ -87,8 +87,10 @@ async function processNext() {
 
     if (pending > (Number(process.env.MAX_CONCURRENT) || 5)) {
         logStats();
-        console.warn("render might be stuck, attempting to restart!")
-        process.exit(1);
+        if (pending > 20) {
+            console.warn("render might be stuck, attempting to restart!")
+            process.exit(1);
+        }
         return;
     }
 
