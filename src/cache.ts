@@ -14,17 +14,23 @@ async function getOr(url: string, mappingFunction: AsyncMappingFunction<string, 
         let originalMapping = mappingFunction;
         mappingFunction = async (key: string) => {
             // try to get from redis first, otherwise fall back to original mapping function
-            let redisValue = await redis.get(key);
-            if (redisValue) {
-                return redisValue;
+            try {
+                let redisValue = await redis.get(key);
+                if (redisValue) {
+                    return redisValue;
+                }
+            } catch (e) {
+                console.warn(e);
             }
-            return originalMapping(key)
-                .then(value => { // intercept the mapped value & store in redis
-                    if (value) {
-                        redis.put(key, value);
-                    }
-                    return value;
-                })
+            let value = await originalMapping(key);
+            if (value) { // intercept the mapped value & store in redis
+                try {
+                    await redis.put(key, value);
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+            return value;
         };
     }
     return cache.get(url, mappingFunction);
