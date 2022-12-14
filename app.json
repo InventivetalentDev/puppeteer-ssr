@@ -22,7 +22,7 @@
     },
     "GOOGLE_CHROME_BIN": {
       "description": "chrome location, set by the chrome buildpack when running on heroku",
-      "required": true
+      "required": false
     },
     "REDISCLOUD_URL": {
       "description": "redis url",
