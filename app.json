@@ -1,6 +1,11 @@
 {
   "name": "puppeteer-ssr",
   "description": "Server-Side-Rendering using Puppeteer",
+  "keywords": [
+    "ssr",
+    "prerender",
+    "chrome"
+  ],
   "repository": "https://github.com/InventivetalentDev/puppeteer-ssr",
   "buildpacks": [
     {
@@ -9,5 +14,62 @@
     {
       "url": "heroku/nodejs"
     }
-  ]
+  ],
+  "env": {
+    "TOKEN": {
+      "description": "authentication token",
+      "required": false
+    },
+    "GOOGLE_CHROME_BIN": {
+      "description": "chrome location, set by the chrome buildpack when running on heroku",
+      "required": true
+    },
+    "REDISCLOUD_URL": {
+      "description": "redis url",
+      "required": false
+    },
+    "MEMORY_CACHE_DURATION": {
+      "description": "time (seconds) to keep rendered pages in memory",
+      "value": 60,
+      "required": false
+    },
+    "REDIS_CACHE_DURATION": {
+      "description": "time (minutes) to keep rendered pages in redis",
+      "value": 15,
+      "required": false
+    },
+    "USER_AGENT": {
+      "description": "string to append to default crawler user-agent",
+      "required": false
+    },
+    "REMOVE_SCRIPTS": {
+      "description": "whether to remove <script> tags after render",
+      "required": false,
+      "value": false
+    },
+    "REMOVE_SELECTORS": {
+      "description": "comma-separated list of selectors to remove from the DOM",
+      "required": false
+    },
+    "GOTO_TIMEOUT": {
+      "value": 3000,
+      "required": false
+    },
+    "REQUESTS_TIMEOUT": {
+      "value": 500,
+      "required": false
+    },
+    "RENDER_TIMEOUT": {
+      "value": 30000,
+      "required": false
+    },
+    "PROCESSING_INTERVAL": {
+      "value": 500,
+      "required": false
+    },
+    "MAX_CONCURRENT": {
+      "value": 5,
+      "required": false
+    }
+  }
 }

@@ -26,6 +26,6 @@ export async function get(url: string) {
 
 export async function put(url: string, content: string) {
     return (await instance()).SET('ssr:renders:' + stripUrl(url), content, {
-        PX: Time.minutes(Number(process.env.REDIS_CACHE_DURATION) || 120)
+        PX: Time.minutes(Number(process.env.REDIS_CACHE_DURATION) || 15)
     });
 }
