@@ -2,7 +2,7 @@
 
 A simple serverside rendering express app using [Puppeteer](https://github.com/puppeteer/puppeteer)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/InventivetalentDev/puppeteer-ssr)
 
 ## Usage
 
