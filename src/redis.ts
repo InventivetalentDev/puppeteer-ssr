@@ -16,12 +16,16 @@ async function instance() {
     return client;
 }
 
+function stripUrl(url: string): string {
+    return url.replace(/[.:]/g, '');
+}
+
 export async function get(url: string) {
-    return (await instance()).GET('ssr:renders:' + url);
+    return (await instance()).GET('ssr:renders:' + stripUrl(url));
 }
 
 export async function put(url: string, content: string) {
-    return (await instance()).SET('ssr:renders:' + url, content, {
+    return (await instance()).SET('ssr:renders:' + stripUrl(url), content, {
         PX: Time.minutes(Number(process.env.REDIS_CACHE_DURATION) || 120)
     });
 }
