@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import express from 'express';
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8080;
 const app = express();
 
 import * as cache from "./cache";
