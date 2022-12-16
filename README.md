@@ -5,7 +5,7 @@ A simple serverside rendering express app using [Puppeteer](https://github.com/p
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/InventivetalentDev/puppeteer-ssr)
 
-`docker pull inventivetalent/puppeteer-ssr` ![Docker Pulls](https://img.shields.io/docker/pulls/inventivetalent/puppeteer-ssr)
+`docker pull inventivetalent/puppeteer-ssr` [![Docker Pulls](https://img.shields.io/docker/pulls/inventivetalent/puppeteer-ssr)](https://hub.docker.com/r/inventivetalent/puppeteer-ssr)
 
 ## Usage
 
