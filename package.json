@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ."
+    "start": "node .",
+    "docker:build": "docker build -t inventivetalent/puppeteer-ssr:latest .",
+    "docker:push": "docker push inventivetalent/puppeteer-ssr"
   },
   "engines": {
     "node": ">=18.0.0"
