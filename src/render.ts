@@ -10,6 +10,11 @@ let pending = 0;
 function logStats() {
     logging.log("queue size: " + queue.length);
     logging.log("pending: " + pending);
+
+    if (pending > 20) {
+        console.warn("render might be stuck, attempting to restart!")
+        process.exit(1);
+    }
 }
 
 async function enqueue(url: string, resolve: (v: string | undefined) => void) {
@@ -87,10 +92,6 @@ async function processNext() {
 
     if (pending > (Number(process.env.MAX_CONCURRENT) || 5)) {
         logStats();
-        if (pending > 20) {
-            console.warn("render might be stuck, attempting to restart!")
-            process.exit(1);
-        }
         return;
     }
 
