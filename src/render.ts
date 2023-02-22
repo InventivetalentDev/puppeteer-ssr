@@ -1,7 +1,7 @@
-import { QueueItem } from "./typings";
-import { ConsoleMessage, Page, PageEventObject } from "puppeteer-core";
+import {QueueItem} from "./typings";
+import {ConsoleMessage, Page, PageEventObject} from "puppeteer-core";
 
-import { getBrowser } from "./browser";
+import {getBrowser} from "./browser";
 import * as logging from "./logging";
 
 const queue: QueueItem[] = [];
@@ -11,14 +11,14 @@ function logStats() {
     logging.log("queue size: " + queue.length);
     logging.log("pending: " + pending);
 
-    if (pending > 20) {
+    if (pending > 20 || queue.length > 20) {
         console.warn("render might be stuck, attempting to restart!")
         process.exit(1);
     }
 }
 
 async function enqueue(url: string, resolve: (v: string | undefined) => void) {
-    queue.unshift({ url, resolve });
+    queue.unshift({url, resolve});
 
     logStats();
 }
@@ -47,7 +47,7 @@ async function doRender(url: string, resolve: (v: string | undefined) => void) {
             page.once('domcontentloaded', () => resolve());
         });
 
-        await page.goto(url, { timeout: Number(process.env.GOTO_TIMEOUT) || 30000 });
+        await page.goto(url, {timeout: Number(process.env.GOTO_TIMEOUT) || 30000});
         logging.debug("goto page done");
 
         // wait for dom to load
@@ -95,7 +95,7 @@ async function processNext() {
         return;
     }
 
-    let { url, resolve } = queue.pop()!;
+    let {url, resolve} = queue.pop()!;
 
     let resolved = false;
     let timeout = setTimeout(() => {
@@ -194,4 +194,4 @@ setInterval(() => {
     }
 }, Number(process.env.PROCESSING_INTERVAL) || 500);
 
-export { enqueue };
+export {enqueue};
